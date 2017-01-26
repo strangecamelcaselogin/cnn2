@@ -13,8 +13,7 @@ class ConvPoolLayer(object):
 
     """
 
-    def __init__(self, filter_shape, image_shape, poolsize=(2, 2),
-                 activation_fn=sigmoid):
+    def __init__(self, filter_shape, image_shape, poolsize=(2, 2), activation_fn=sigmoid):
         """`filter_shape` is a tuple of length 4, whose entries are the number
         of filters, the number of input feature maps, the filter height, and the
         filter width.
@@ -34,26 +33,19 @@ class ConvPoolLayer(object):
 
         # initialize weights and biases
         n_out = (filter_shape[0] * np.prod(filter_shape[2:]) / np.prod(poolsize))
-        self.w = theano.shared(
-            np.asarray(
-                np.random.normal(loc=0, scale=np.sqrt(1.0 / n_out), size=filter_shape),
-                dtype=theano.config.floatX),
-            borrow=True)
-        self.b = theano.shared(
-            np.asarray(
-                np.random.normal(loc=0, scale=1.0, size=(filter_shape[0],)),
-                dtype=theano.config.floatX),
-            borrow=True)
+        self.w = theano.shared(np.asarray(np.random.normal(loc=0, scale=np.sqrt(1.0 / n_out), size=filter_shape),
+                                          dtype=theano.config.floatX), borrow=True)
+
+        self.b = theano.shared(np.asarray(np.random.normal(loc=0, scale=1.0, size=(filter_shape[0],)),
+                                          dtype=theano.config.floatX), borrow=True)
+
         self.params = [self.w, self.b]
 
-    def set_inpt(self, inpt, inpt_dropout, mini_batch_size):
+    def set_input(self, inpt, inpt_dropout, mini_batch_size):
         self.inpt = inpt.reshape(self.image_shape)
-        conv_out = conv.conv2d(
-            input=self.inpt, filters=self.w, filter_shape=self.filter_shape,
-            image_shape=self.image_shape)
+        conv_out = conv.conv2d(input=self.inpt, filters=self.w, filter_shape=self.filter_shape,
+                               image_shape=self.image_shape)
 
         pooled_out = downsample.max_pool_2d(input=conv_out, ds=self.poolsize, ignore_border=True)
-
         self.output = self.activation_fn(pooled_out + self.b.dimshuffle('x', 0, 'x', 'x'))
-
         self.output_dropout = self.output  # no dropout in the convolutional layers

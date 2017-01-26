@@ -17,8 +17,7 @@ def ReLU(z):
 
 
 def dropout_layer(layer, p_dropout):
-    srng = shared_randomstreams.RandomStreams(
-        np.random.RandomState(0).randint(999999))
+    srng = shared_randomstreams.RandomStreams(np.random.RandomState(0).randint(999999))
     mask = srng.binomial(n=1, p=1 - p_dropout, size=layer.shape)
     return layer * T.cast(mask, theano.config.floatX)
 
@@ -38,10 +37,8 @@ def load_data_shared(filename="./MNIST/mnist.pkl.gz"):
         the data to the GPU, if one is available.
 
         """
-        shared_x = theano.shared(
-            np.asarray(data[0], dtype=theano.config.floatX), borrow=True)
-        shared_y = theano.shared(
-            np.asarray(data[1], dtype=theano.config.floatX), borrow=True)
+        shared_x = theano.shared(np.asarray(data[0], dtype=theano.config.floatX), borrow=True)
+        shared_y = theano.shared(np.asarray(data[1], dtype=theano.config.floatX), borrow=True)
         return shared_x, T.cast(shared_y, "int32")
 
     return [shared(training_data), shared(validation_data), shared(test_data)]

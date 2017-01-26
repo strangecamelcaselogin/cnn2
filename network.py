@@ -68,11 +68,11 @@ class Network(object):
         self.x = T.matrix("x")
         self.y = T.ivector("y")
         init_layer = self.layers[0]
-        init_layer.set_inpt(self.x, self.x, self.mini_batch_size)
+        init_layer.set_input(self.x, self.x, self.mini_batch_size)
 
         for j in xrange(1, len(self.layers)):
             prev_layer, layer = self.layers[j - 1], self.layers[j]
-            layer.set_inpt(
+            layer.set_input(
                 prev_layer.output, prev_layer.output_dropout, self.mini_batch_size)
 
         self.output = self.layers[-1].output
