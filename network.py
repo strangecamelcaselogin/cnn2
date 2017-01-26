@@ -42,22 +42,8 @@ from functions_ import size
 # from theano.tensor import tanh
 
 
-GPU = False
-if GPU:
-    print "Trying to run under a GPU.  If this is not desired, then modify " + \
-          "network.py\nto set the GPU flag to False."
-    try:
-        theano.config.device = 'gpu'
-    except:
-        pass  # it's already set
-    theano.config.floatX = 'float32'
-else:
-    print "Running with a CPU.  If this is not desired, then the modify " + \
-          "network.py to set\nthe GPU flag to True."
-
-
 # Main class used to construct and train networks
-class Network(object):
+class Network:
     def __init__(self, layers, mini_batch_size):
         """Takes a list of `layers`, describing the network architecture, and
         a value for the `mini_batch_size` to be used during training
@@ -82,6 +68,7 @@ class Network(object):
 
     def SGD(self, training_data, epochs, mini_batch_size, eta, validation_data, test_data, lmbda=0.0):
         """Train the network using mini-batch stochastic gradient descent."""
+        print("RUN SGD")
 
         train_timer = time()
 
@@ -121,6 +108,7 @@ class Network(object):
                 self.x: test_x[i * self.mini_batch_size: (i + 1) * self.mini_batch_size],
                 self.y: test_y[i * self.mini_batch_size: (i + 1) * self.mini_batch_size]
             })
+
         self.test_mb_predictions = theano.function(
             [i], self.layers[-1].y_out,
             givens={

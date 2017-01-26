@@ -5,7 +5,7 @@ from theano.tensor.nnet import conv
 from theano.tensor.nnet import sigmoid
 
 
-class ConvPoolLayer(object):
+class ConvPoolLayer:
     """Used to create a combination of a convolutional and a max-pooling
     layer.  A more sophisticated implementation would separate the
     two, but for our purposes we'll always use them together, and it

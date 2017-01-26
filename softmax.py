@@ -6,7 +6,7 @@ import theano.tensor as T
 from functions_ import dropout_layer
 
 
-class SoftmaxLayer(object):
+class SoftmaxLayer:
     def __init__(self, n_in, n_out, p_dropout=0.0):
         self.n_in = n_in
         self.n_out = n_out
