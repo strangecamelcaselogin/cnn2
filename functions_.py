@@ -1,5 +1,6 @@
 #import _pickle
-import cPickle
+#import cPickle
+import _pickle
 import gzip
 
 import numpy as np
@@ -29,11 +30,11 @@ def size(data):
 
 
 def load_data_shared(filename="./MNIST/mnist.pkl.gz"):
-    #with gzip.open(filename, 'rb') as f:
-    #    training_data, validation_data, test_data = _pickle.load(file=f, encoding='latin1')
-    f = gzip.open(filename, 'rb')
-    training_data, validation_data, test_data = cPickle.load(f)
-    f.close()
+    with gzip.open(filename, 'rb') as f:
+        training_data, validation_data, test_data = _pickle.load(file=f, encoding='latin1')
+    #f = gzip.open(filename, 'rb')
+    #training_data, validation_data, test_data = cPickle.load(f)
+    #f.close()
 
     def shared(data):
         """Place the data into shared variables.  This allows Theano to copy

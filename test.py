@@ -46,7 +46,7 @@ if __name__ == '__main__':
     """
 
     training_data, validation_data, test_data = load_data_shared()
-    print("Data loaded")
+    print("Data loaded.")
 
     '''
     mini_batch_size = 10
