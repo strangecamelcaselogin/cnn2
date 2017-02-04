@@ -38,8 +38,8 @@ import theano.tensor as T
 
 from functions_ import size
 
-# from theano.tensor.nnet import sigmoid
-# from theano.tensor import tanh
+from theano.tensor.nnet import sigmoid
+from theano.tensor import tanh
 
 
 # Main class used to construct and train networks
@@ -60,13 +60,12 @@ class Network:
 
         for j in xrange(1, len(self.layers)):
             prev_layer, layer = self.layers[j - 1], self.layers[j]
-            layer.set_input(
-                prev_layer.output, prev_layer.output_dropout, self.mini_batch_size)
+            layer.set_input(prev_layer.output, prev_layer.output_dropout, self.mini_batch_size)
 
         self.output = self.layers[-1].output
         self.output_dropout = self.layers[-1].output_dropout
 
-    def SGD(self, training_data, epochs, mini_batch_size, eta, validation_data, test_data, lmbda=0.0):
+    def SGD(self, training_data, validation_data, epochs, eta, test_data, lmbda=0.0):
         """Train the network using mini-batch stochastic gradient descent."""
         print("RUN SGD")
 
@@ -77,9 +76,9 @@ class Network:
         test_x, test_y = test_data
 
         # compute number of minibatches for training, validation and testing
-        num_training_batches = size(training_data) / mini_batch_size
-        num_validation_batches = size(validation_data) / mini_batch_size
-        num_test_batches = size(test_data) / mini_batch_size
+        num_training_batches = size(training_data) / self.mini_batch_size
+        num_validation_batches = size(validation_data) / self.mini_batch_size
+        num_test_batches = size(test_data) / self.mini_batch_size
 
         # define the (regularized) cost function, symbolic gradients, and updates
         l2_norm_squared = sum([(layer.w ** 2).sum() for layer in self.layers])
@@ -119,28 +118,34 @@ class Network:
         best_validation_accuracy = 0.0
         for epoch in xrange(epochs):
             epoch_timer = time()
+            print "\nEpoch {0}:".format(epoch),
             for minibatch_index in xrange(num_training_batches):
                 iteration = num_training_batches * epoch + minibatch_index
                 if iteration % 1000 == 0:
-                    print("Training mini-batch number {0}".format(iteration))
+                    print "#",
 
                 cost_ij = train_mb(minibatch_index)
                 if (iteration + 1) % num_training_batches == 0:
                     validation_accuracy = np.mean([validate_mb_accuracy(j) for j in xrange(num_validation_batches)])
-                    print("Epoch {0}: validation accuracy {1:.2%}, by {2:.1f} sec".format(
-                        epoch, validation_accuracy, time() - epoch_timer))
+                    print("\nEpoch end: validation accuracy {0:.2%}, by {1:.1f} sec".format(
+                        validation_accuracy, time() - epoch_timer))
 
                     if validation_accuracy >= best_validation_accuracy:
                         print("This is the best validation accuracy to date.")
                         best_validation_accuracy = validation_accuracy
                         best_iteration = iteration
                         if test_data:
-                            test_accuracy = np.mean(
-                                [test_mb_accuracy(j) for j in xrange(num_test_batches)])
-                            print('The corresponding test accuracy is {0:.2%}'.format(
-                                test_accuracy))
+                            test_accuracy = np.mean([test_mb_accuracy(j) for j in xrange(num_test_batches)])
+                            print('The corresponding test accuracy is {0:.2%}'.format(test_accuracy))
 
+        print
         print("Finished training network by {0:.1f} sec.".format(time() - train_timer))
         print("Best validation accuracy of {0:.2%} obtained at iteration {1}".format(
             best_validation_accuracy, best_iteration))
         print("Corresponding test accuracy of {0:.2%}".format(test_accuracy))
+
+    def save(self, path):
+        pass
+
+    def load(self, path):
+        pass
