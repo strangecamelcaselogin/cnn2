@@ -11,7 +11,8 @@ rectified linear units, with more easily added).
 
 """
 
-from time import time
+from time import time, localtime
+import _pickle
 
 import numpy as np
 import theano
@@ -104,7 +105,7 @@ class Network:
         test_accuracy = 0
         for epoch in range(epochs):
             epoch_timer = time()
-            print("Epoch {0}: ".format(epoch), end='', flush=True)
+            print("Epoch {0}: ".format(epoch+1), end='', flush=True)
 
             for minibatch_index in range(num_training_batches):
                 iteration = num_training_batches * epoch + minibatch_index
@@ -147,8 +148,17 @@ class Network:
 
         return _predict_batch(batch_index)[num_in_batch]
 
-    def save(self, path):
-        pass
+    def save(self, path=None):
+        if path is None:
+            t = localtime()
+            path = './net_{}_{}_{}__{}_{}_{}.net'.format(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec)
+        with open(path, 'wb') as f:
+            _pickle.dump(self, file=f)
 
     def load(self, path):
-        pass
+        try:
+            with open(path, 'rb') as f:
+                self = _pickle.load(file=f, encoding='latin1')
+
+        except Exception as e:  # TODO file error
+            print(e.value)

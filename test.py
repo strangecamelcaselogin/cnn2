@@ -68,7 +68,7 @@ if __name__ == '__main__':
           .format(size(training_data), size(validation_data), size(test_data)))
 
     mini_batch_size = 10
-    epochs = 1
+    epochs = 3
     ETA = 0.1
 
     net = Network([
@@ -88,12 +88,17 @@ if __name__ == '__main__':
                      n_out=10,
                      p_dropout=0.25)], mini_batch_size)
 
-    net.SGD(training_data, validation_data, test_data, epochs, ETA)
-    net.predict(training_data[0], 100)
+    #net.SGD(training_data, validation_data, test_data, epochs, ETA)
+    #net.save()
 
-    #im150 = test_data[0].get_value()[150].reshape((28, 28))
-    #plt.imshow(im150, cmap='Greys', interpolation='none')
-    #plt.show()
+    net.load('./save_2017_2_6__0_18_23.net')  # TODO DOESNT WORK
+
+    test_num = 158
+
+    print(net.predict(test_data[0], test_num))
+    im = test_data[0].get_value()[test_num].reshape((28, 28))
+    plt.imshow(im, cmap='Greys', interpolation='none')
+    plt.show()
 
     # TODO check num_training_batches if really int
     # TODO load, save net
