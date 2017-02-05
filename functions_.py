@@ -1,5 +1,4 @@
-#import _pickle
-#import cPickle
+#import cPickle  # python2
 import _pickle
 import gzip
 
@@ -29,20 +28,19 @@ def size(data):
     return data[0].get_value(borrow=True).shape[0]
 
 
+def shared(data):
+    shared_x = theano.shared(np.asarray(data[0], dtype=theano.config.floatX), borrow=True)
+    shared_y = theano.shared(np.asarray(data[1], dtype=theano.config.floatX), borrow=True)
+    return shared_x, T.cast(shared_y, "int32")
+
+
 def load_data_shared(filename="./MNIST/mnist.pkl.gz"):
     with gzip.open(filename, 'rb') as f:
         training_data, validation_data, test_data = _pickle.load(file=f, encoding='latin1')
-    #f = gzip.open(filename, 'rb')
-    #training_data, validation_data, test_data = cPickle.load(f)
-    #f.close()
 
-    def shared(data):
-        """Place the data into shared variables.  This allows Theano to copy
-        the data to the GPU, if one is available.
-
-        """
-        shared_x = theano.shared(np.asarray(data[0], dtype=theano.config.floatX), borrow=True)
-        shared_y = theano.shared(np.asarray(data[1], dtype=theano.config.floatX), borrow=True)
-        return shared_x, T.cast(shared_y, "int32")
+    # python2
+    # f = gzip.open(filename, 'rb')
+    # training_data, validation_data, test_data = cPickle.load(f)
+    # f.close()
 
     return [shared(training_data), shared(validation_data), shared(test_data)]

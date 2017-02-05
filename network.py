@@ -1,5 +1,6 @@
-"""network3.py
-~~~~~~~~~~~~~~
+"""
+strangecamelcaselogin (me) "fork" of source code to this book.
+    http://neuralnetworksanddeeplearning.com/
 
 A Theano-based program for training and running simple neural
 networks.
@@ -8,26 +9,6 @@ Supports several layer types (fully connected, convolutional, max
 pooling, softmax), and activation functions (sigmoid, tanh, and
 rectified linear units, with more easily added).
 
-When run on a CPU, this program is much faster than network.py and
-network2.py.  However, unlike network.py and network2.py it can also
-be run on a GPU, which makes it faster still.
-
-Because the code is based on Theano, the code is different in many
-ways from network.py and network2.py.  However, where possible I have
-tried to maintain consistency with the earlier programs.  In
-particular, the API is similar to network2.py.  Note that I have
-focused on making the code simple, easily readable, and easily
-modifiable.  It is not optimized, and omits many desirable features.
-
-This program incorporates ideas from the Theano documentation on
-convolutional neural nets (notably,
-http://deeplearning.net/tutorial/lenet.html ), from Misha Denil's
-implementation of dropout (https://github.com/mdenil/dropout ), and
-from Chris Olah (http://colah.github.io ).
-
-Written for Theano 0.6 and 0.7, needs some changes for more recent
-versions of Theano.
-
 """
 
 from time import time
@@ -35,6 +16,7 @@ from time import time
 import numpy as np
 import theano
 import theano.tensor as T
+from theano import pp
 
 from functions_ import size
 
@@ -65,16 +47,24 @@ class Network:
         self.output = self.layers[-1].output
         self.output_dropout = self.layers[-1].output_dropout
 
-    def SGD(self, training_data, validation_data, epochs, eta, test_data, lmbda=0.0):
-        """Train the network using mini-batch stochastic gradient descent."""
+    def SGD(self, training_data, validation_data, test_data, epochs, eta, lmbda=0.0):
+        """
+        Train the network using mini-batch stochastic gradient descent.
 
-        print("Start SGD training.")
+        :param eta: speed of training
+        :param lmbda: parameter for L2 regularisation
+        :return:
+        """
+
         train_timer = time()
 
-        # compute number of minibatches for training, validation and testing
         num_training_batches = int(size(training_data) / self.mini_batch_size)
         num_validation_batches = int(size(validation_data) / self.mini_batch_size)
         num_test_batches = int(size(test_data) / self.mini_batch_size)
+
+        print("Start SGD training.")
+        print("{0} epochs, {1} training batches per epoch.".format(epochs, num_training_batches))
+        print("# - 1000 batches.\n")
 
         # data
         training_x, training_y = training_data
@@ -109,24 +99,16 @@ class Network:
                 self.y: test_y[i * self.mini_batch_size: (i + 1) * self.mini_batch_size]
             })
 
-        self.test_mb_predictions = theano.function(
-            [i], self.layers[-1].y_out,
-            givens={
-                self.x: test_x[i * self.mini_batch_size: (i + 1) * self.mini_batch_size]
-            })
-
-        # Do the actual training
         best_validation_accuracy = 0.0
         best_iteration = 0
         test_accuracy = 0
-
         for epoch in range(epochs):
             epoch_timer = time()
             print("Epoch {0}: ".format(epoch), end='', flush=True)
 
             for minibatch_index in range(num_training_batches):
                 iteration = num_training_batches * epoch + minibatch_index
-                if iteration % 1000 == 0:
+                if minibatch_index % 1000 == 0:
                     print("#", end='', flush=True)
 
                 train_mb(minibatch_index)
@@ -147,11 +129,23 @@ class Network:
         print()
         print("Finished training network by {0:.1f} sec.".format(time() - train_timer))
         print("Best validation accuracy of {0:.2%} obtained at iteration {1}."
-              .format(best_validation_accuracy, best_iteration))
+              .format(best_validation_accuracy, best_iteration + 1))
         print("Corresponding test accuracy of {0:.2%}.".format(test_accuracy))
 
-    def predict(self):
-        pass
+    def predict(self, data, index):
+        """
+        :param data: array of images
+        :param index: index in data
+        :return: class of image
+        """
+        i = T.lscalar()
+        _predict_batch = theano.function([i], self.layers[-1].y_out, givens={
+            self.x: data[i * self.mini_batch_size: (i + 1) * self.mini_batch_size]})
+
+        batch_index = index // self.mini_batch_size
+        num_in_batch = index % self.mini_batch_size
+
+        return _predict_batch(batch_index)[num_in_batch]
 
     def save(self, path):
         pass

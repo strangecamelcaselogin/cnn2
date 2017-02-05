@@ -9,7 +9,7 @@ from softmax import SoftmaxLayer
 
 from theano.tensor.nnet import sigmoid
 from theano.tensor import tanh
-from functions_ import load_data_shared
+from functions_ import load_data_shared, size
 from functions_ import ReLU
 
 
@@ -33,6 +33,11 @@ def check_show(size, data):
         plt.imshow(im, cmap='Greys', interpolation='none')
 
 
+def show_img(img_data, num):
+    im = img_data[0].get_value()[num].reshape((28, 28))
+    plt.imshow(im, cmap='Greys', interpolation='none')
+    plt.show()
+
 if __name__ == '__main__':
     """
     GPU = True
@@ -47,10 +52,8 @@ if __name__ == '__main__':
         print("Running with a CPU")
     """
 
-    training_data, validation_data, test_data = load_data_shared()
-    print("Data loaded.")
-
     '''
+    # Простой перцептрон
     mini_batch_size = 10
     net = Network([
         FullyConnectedLayer(n_in=784, n_out=100),
@@ -60,8 +63,12 @@ if __name__ == '__main__':
             validation_data, test_data)
     '''
 
+    training_data, validation_data, test_data = load_data_shared()
+    print("Data loaded, sizes: train={0}, valid={1}, test={2}.\n"
+          .format(size(training_data), size(validation_data), size(test_data)))
+
     mini_batch_size = 10
-    epochs = 10
+    epochs = 1
     ETA = 0.1
 
     net = Network([
@@ -81,12 +88,14 @@ if __name__ == '__main__':
                      n_out=10,
                      p_dropout=0.25)], mini_batch_size)
 
-    net.SGD(training_data, validation_data, epochs, ETA, test_data)
+    net.SGD(training_data, validation_data, test_data, epochs, ETA)
+    net.predict(training_data[0], 100)
 
-    # TODO test_data
-    print(net.test_mb_predictions(150))
-    # [3 3 3 3 0 3 3 3 3 3]
-    # [1 9 8 3 0 7 2 7 9 4]
-    im150 = test_data[0].get_value()[150].reshape((28, 28))
-    plt.imshow(im150, cmap='Greys', interpolation='none')
-    plt.show()
+    #im150 = test_data[0].get_value()[150].reshape((28, 28))
+    #plt.imshow(im150, cmap='Greys', interpolation='none')
+    #plt.show()
+
+    # TODO check num_training_batches if really int
+    # TODO load, save net
+    # TODO early stop
+    # TODO ETA as function of epoch
