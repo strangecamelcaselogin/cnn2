@@ -76,6 +76,7 @@ class Network:
         num_validation_batches = int(size(validation_data) / self.mini_batch_size)
         num_test_batches = int(size(test_data) / self.mini_batch_size)
 
+        # data
         training_x, training_y = training_data
         validation_x, validation_y = validation_data
         test_x, test_y = test_data
@@ -148,6 +149,9 @@ class Network:
         print("Best validation accuracy of {0:.2%} obtained at iteration {1}."
               .format(best_validation_accuracy, best_iteration))
         print("Corresponding test accuracy of {0:.2%}.".format(test_accuracy))
+
+    def predict(self):
+        pass
 
     def save(self, path):
         pass

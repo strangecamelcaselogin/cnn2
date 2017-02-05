@@ -1,34 +1,36 @@
-# import theano
-# from theano.tensor import shape
-# import numpy as np
-import matplotlib.pyplot as plt
-from theano.tensor.nnet import sigmoid
-from theano.tensor import tanh
+from random import randint
 
-from functions_ import load_data_shared
-from functions_ import ReLU
+import matplotlib.pyplot as plt
 
 from network import Network
 from convolution import ConvPoolLayer
 from fullyconnected import FullyConnectedLayer
 from softmax import SoftmaxLayer
 
+from theano.tensor.nnet import sigmoid
+from theano.tensor import tanh
+from functions_ import load_data_shared
+from functions_ import ReLU
 
-def show():
-    pass
-    """
-        img = None
-        for i in ttt:
-            im = training_data[0].get_value()[i].reshape((28, 28))
-            if img is None:
-                img = plt.imshow(im, cmap='Greys', interpolation='none')
-            else:
-                img.set_data(im)
-            plt.pause(2.)
-            print(net.test_mb_predictions(i))
-            plt.draw()
 
+def check_show(size, data):
     """
+    img = None
+    for i in test_set:
+        im = training_data[0].get_value()[i].reshape((28, 28))
+        if img is None:
+            img = plt.imshow(im, cmap='Greys', interpolation='none')
+        else:
+            img.set_data(im)
+        plt.pause(2.)
+        print(net.test_mb_predictions(i))
+        plt.draw()
+    """
+
+    test_set = [randint(0, 10000) for _ in range(size)]
+    for i in test_set:
+        im = training_data[0].get_value()[i].reshape((28, 28))
+        plt.imshow(im, cmap='Greys', interpolation='none')
 
 
 if __name__ == '__main__':
@@ -59,7 +61,7 @@ if __name__ == '__main__':
     '''
 
     mini_batch_size = 10
-    epochs = 8
+    epochs = 10
     ETA = 0.1
 
     net = Network([
