@@ -1,7 +1,7 @@
 # import theano
 # from theano.tensor import shape
 # import numpy as np
-
+import matplotlib.pyplot as plt
 from theano.tensor.nnet import sigmoid
 from theano.tensor import tanh
 
@@ -57,6 +57,7 @@ if __name__ == '__main__':
     net.SGD(training_data, 60, mini_batch_size, 0.1,
             validation_data, test_data)
     '''
+
     mini_batch_size = 10
     epochs = 8
     ETA = 0.1
@@ -81,8 +82,9 @@ if __name__ == '__main__':
     net.SGD(training_data, validation_data, epochs, ETA, test_data)
 
     # TODO test_data
-    # print(net.test_mb_predictions(150))
+    print(net.test_mb_predictions(150))
     # [3 3 3 3 0 3 3 3 3 3]
     # [1 9 8 3 0 7 2 7 9 4]
-    # im150 = training_data[0].get_value()[150].reshape((28, 28))
-    # plt.imshow(im150, cmap='Greys', interpolation='none')
+    im150 = test_data[0].get_value()[150].reshape((28, 28))
+    plt.imshow(im150, cmap='Greys', interpolation='none')
+    plt.show()

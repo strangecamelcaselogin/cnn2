@@ -67,18 +67,18 @@ class Network:
 
     def SGD(self, training_data, validation_data, epochs, eta, test_data, lmbda=0.0):
         """Train the network using mini-batch stochastic gradient descent."""
+
         print("Start SGD training.")
-
         train_timer = time()
-
-        training_x, training_y = training_data
-        validation_x, validation_y = validation_data
-        test_x, test_y = test_data
 
         # compute number of minibatches for training, validation and testing
         num_training_batches = int(size(training_data) / self.mini_batch_size)
         num_validation_batches = int(size(validation_data) / self.mini_batch_size)
         num_test_batches = int(size(test_data) / self.mini_batch_size)
+
+        training_x, training_y = training_data
+        validation_x, validation_y = validation_data
+        test_x, test_y = test_data
 
         # define the (regularized) cost function, symbolic gradients, and updates
         l2_norm_squared = sum([(layer.w ** 2).sum() for layer in self.layers])
@@ -116,32 +116,37 @@ class Network:
 
         # Do the actual training
         best_validation_accuracy = 0.0
+        best_iteration = 0
+        test_accuracy = 0
+
         for epoch in range(epochs):
             epoch_timer = time()
             print("Epoch {0}: ".format(epoch), end='', flush=True)
+
             for minibatch_index in range(num_training_batches):
                 iteration = num_training_batches * epoch + minibatch_index
                 if iteration % 1000 == 0:
                     print("#", end='', flush=True)
 
-                cost_ij = train_mb(minibatch_index)
+                train_mb(minibatch_index)
+
                 if (iteration + 1) % num_training_batches == 0:
                     validation_accuracy = np.mean([validate_mb_accuracy(j) for j in range(num_validation_batches)])
-                    print("\nEpoch end: validation accuracy {0:.2%}, by {1:.1f} sec.".format(
-                        validation_accuracy, time() - epoch_timer))
+                    print(" : by {0:.1f} sec. | vld acc = {1:.2%}"
+                          .format(time() - epoch_timer, validation_accuracy), end=' ')
 
                     if validation_accuracy >= best_validation_accuracy:
-                        print("This is the best validation accuracy to date.")
                         best_validation_accuracy = validation_accuracy
                         best_iteration = iteration
-                        if test_data:
-                            test_accuracy = np.mean([test_mb_accuracy(j) for j in range(num_test_batches)])
-                            print('The corresponding test accuracy is {0:.2%}.'.format(test_accuracy))
+                        test_accuracy = np.mean([test_mb_accuracy(j) for j in range(num_test_batches)])
+                        print("(best) | cor acc = {0:.2%}".format(test_accuracy))
+                    else:
+                        print()
 
         print()
         print("Finished training network by {0:.1f} sec.".format(time() - train_timer))
-        print("Best validation accuracy of {0:.2%} obtained at iteration {1}.".format(
-            best_validation_accuracy, best_iteration))
+        print("Best validation accuracy of {0:.2%} obtained at iteration {1}."
+              .format(best_validation_accuracy, best_iteration))
         print("Corresponding test accuracy of {0:.2%}.".format(test_accuracy))
 
     def save(self, path):
