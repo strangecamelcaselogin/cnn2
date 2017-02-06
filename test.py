@@ -66,30 +66,29 @@ if __name__ == '__main__':
     training_data, validation_data, test_data = load_data_shared()
     print("Data loaded, sizes: train={0}, valid={1}, test={2}.\n"
           .format(size(training_data), size(validation_data), size(test_data)))
-    '''
-        mini_batch_size = 10
-        epochs = 1
-        ETA = 0.1
 
-        net = Network([
-            ConvPoolLayer(image_shape=(mini_batch_size, 1, 28, 28),
-                          filter_shape=(20, 1, 5, 5),
-                          poolsize=(2, 2),
-                          activation_fn=ReLU),
-            ConvPoolLayer(image_shape=(mini_batch_size, 20, 12, 12),
-                          filter_shape=(40, 20, 5, 5),
-                          poolsize=(2, 2),
-                          activation_fn=ReLU),
-            FullyConnectedLayer(n_in=40 * 4 * 4,
-                                n_out=100,
-                                activation_fn=ReLU,
-                                p_dropout=0.25),
-            SoftmaxLayer(n_in=100,
-                         n_out=10,
-                         p_dropout=0.25)], mini_batch_size)
-        net.SGD(training_data, validation_data, test_data, epochs, ETA)
-        net.save()
-    '''
+    mini_batch_size = 10
+    epochs = 1
+    ETA = 0.1
+
+    net = Network([
+        ConvPoolLayer(image_shape=(mini_batch_size, 1, 28, 28),
+                      filter_shape=(20, 1, 5, 5),
+                      poolsize=(2, 2),
+                      activation_fn=ReLU),
+        ConvPoolLayer(image_shape=(mini_batch_size, 20, 12, 12),
+                      filter_shape=(40, 20, 5, 5),
+                      poolsize=(2, 2),
+                      activation_fn=ReLU),
+        FullyConnectedLayer(n_in=40 * 4 * 4,
+                            n_out=100,
+                            activation_fn=ReLU,
+                            p_dropout=0.25),
+        SoftmaxLayer(n_in=100,
+                     n_out=10,
+                     p_dropout=0.25)], mini_batch_size)
+    net.SGD(training_data, validation_data, test_data, epochs, ETA)
+    net.save()
 
     net = Network.load('./2017-2-6_11-28-50.net')
 

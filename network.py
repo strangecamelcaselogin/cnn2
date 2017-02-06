@@ -31,11 +31,12 @@ class Network:
         """Takes a list of `layers`, describing the network architecture, and
         a value for the `mini_batch_size` to be used during training
         by stochastic gradient descent.
-
         """
+
         self.layers = layers
         self.mini_batch_size = mini_batch_size
         self.params = [param for layer in self.layers for param in layer.params]
+
         self.x = T.matrix("x")
         self.y = T.ivector("y")
         init_layer = self.layers[0]
@@ -48,6 +49,8 @@ class Network:
         self.output = self.layers[-1].output
         self.output_dropout = self.layers[-1].output_dropout
 
+        self.hyper_params = None
+
     def SGD(self, training_data, validation_data, test_data, epochs, eta, lmbda=0.0):
         """
         Train the network using mini-batch stochastic gradient descent.
@@ -58,6 +61,11 @@ class Network:
         """
 
         train_timer = time()
+
+        # save hyper parameters in case of Network.load().
+        self.hyper_params = {'epochs': epochs,
+                             'eta': eta,
+                             'lmbda': lmbda}
 
         num_training_batches = int(size(training_data) / self.mini_batch_size)
         num_validation_batches = int(size(validation_data) / self.mini_batch_size)
@@ -136,7 +144,7 @@ class Network:
     def predict(self, data, index):
         """
         :param data: array of images
-        :param index: index in data
+        :param index: index in this array
         :return: class of image
         """
         i = T.lscalar()
@@ -149,6 +157,10 @@ class Network:
         return _predict_batch(batch_index)[num_in_batch]
 
     def save(self, path=None):
+        """
+        :param path: path to file, that will contain Network instance.
+        :return:
+        """
         if path is None:
             t = localtime()
             path = './{}-{}-{}_{}-{}-{}.net'.format(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec)
@@ -158,6 +170,13 @@ class Network:
 
     @classmethod
     def load(cls, path):
+        """
+        example:
+            net = Network.load('./2017-2-6_11-28-50.net')
+
+        :param path: path to .net file
+        :return: Network instance
+        """
         with open(path, 'rb') as f:
             _dict = _pickle.load(file=f, encoding='latin1')
 
