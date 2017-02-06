@@ -26,15 +26,12 @@ def check_show(size, data):
         print(net.test_mb_predictions(i))
         plt.draw()
     """
-
-    test_set = [randint(0, 10000) for _ in range(size)]
-    for i in test_set:
-        im = training_data[0].get_value()[i].reshape((28, 28))
-        plt.imshow(im, cmap='Greys', interpolation='none')
+    pass
 
 
 def show_img(img_data, num):
-    im = img_data[0].get_value()[num].reshape((28, 28))
+    print(net.predict(test_data[0], test_num))  # TODO label or title
+    im = img_data[num].reshape((28, 28))
     plt.imshow(im, cmap='Greys', interpolation='none')
     plt.show()
 
@@ -67,8 +64,9 @@ if __name__ == '__main__':
     print("Data loaded, sizes: train={0}, valid={1}, test={2}.\n"
           .format(size(training_data), size(validation_data), size(test_data)))
 
+
     mini_batch_size = 10
-    epochs = 1
+    epochs = 20
     ETA = 0.1
 
     net = Network([
@@ -88,16 +86,12 @@ if __name__ == '__main__':
                      n_out=10,
                      p_dropout=0.25)], mini_batch_size)
     net.SGD(training_data, validation_data, test_data, epochs, ETA)
-    net.save()
 
-    net = Network.load('./2017-2-6_11-28-50.net')
+
+    # net = Network.load('./2017-2-6_23-38-47.net')
 
     test_num = 9
-    print(net.predict(test_data[0], test_num))
-    im = test_data[0].get_value()[test_num].reshape((28, 28))
-    plt.imshow(im, cmap='Greys', interpolation='none')
-    plt.show()
+    show_img(test_data[0].get_value(), test_num)
 
-    # TODO check num_training_batches if really int
     # TODO early stop
     # TODO ETA as function of epoch

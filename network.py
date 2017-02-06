@@ -19,7 +19,7 @@ import theano
 import theano.tensor as T
 from theano import pp
 
-from functions_ import size
+from functions_ import size, safe_float2int
 
 from theano.tensor.nnet import sigmoid
 from theano.tensor import tanh
@@ -67,9 +67,9 @@ class Network:
                              'eta': eta,
                              'lmbda': lmbda}
 
-        num_training_batches = int(size(training_data) / self.mini_batch_size)
-        num_validation_batches = int(size(validation_data) / self.mini_batch_size)
-        num_test_batches = int(size(test_data) / self.mini_batch_size)
+        num_training_batches = safe_float2int(size(training_data) / self.mini_batch_size)
+        num_validation_batches = safe_float2int(size(validation_data) / self.mini_batch_size)
+        num_test_batches = safe_float2int(size(test_data) / self.mini_batch_size)
 
         print("Start SGD training.")
         print("{0} epochs, {1} training batches per epoch.".format(epochs, num_training_batches))

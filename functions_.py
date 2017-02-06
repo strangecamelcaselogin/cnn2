@@ -29,7 +29,7 @@ def size(data):
 
 def safe_float2int(x):
     if not x.is_integer():
-        raise ValueError("Result of division not integer.")
+        raise ValueError("Result of division not integer (as expected).")
     else:
         return int(x)
 
