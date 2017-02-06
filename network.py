@@ -151,14 +151,16 @@ class Network:
     def save(self, path=None):
         if path is None:
             t = localtime()
-            path = './net_{}_{}_{}__{}_{}_{}.net'.format(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec)
+            path = './{}-{}-{}_{}-{}-{}.net'.format(t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec)
+
         with open(path, 'wb') as f:
-            _pickle.dump(self, file=f)
+            _pickle.dump(self.__dict__, file=f)
 
-    def load(self, path):
-        try:
-            with open(path, 'rb') as f:
-                self = _pickle.load(file=f, encoding='latin1')
+    @classmethod
+    def load(cls, path):
+        with open(path, 'rb') as f:
+            _dict = _pickle.load(file=f, encoding='latin1')
 
-        except Exception as e:  # TODO file error
-            print(e.value)
+        obj = cls.__new__(cls)
+        obj.__dict__.update(_dict)
+        return obj
