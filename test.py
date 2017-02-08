@@ -1,5 +1,5 @@
 from random import randint
-
+import theano
 import matplotlib.pyplot as plt
 
 from network import Network
@@ -36,22 +36,9 @@ def show_img(img_data, num):
     plt.show()
 
 if __name__ == '__main__':
-    """
-    GPU = True
-    if GPU:
-        print("Trying to run under a GPU.")
-        try:
-            theano.config.device = 'gpu'
-        except Exception as e:
-            print(e)
-        theano.config.floatX = 'float32'
-    else:
-        print("Running with a CPU")
-    """
 
     '''
     # Простой перцептрон
-    mini_batch_size = 10
     net = Network([
         FullyConnectedLayer(n_in=784, n_out=100),
         SoftmaxLayer(n_in=100, n_out=10)], mini_batch_size)
@@ -63,7 +50,6 @@ if __name__ == '__main__':
     training_data, validation_data, test_data = load_data_shared()
     print("Data loaded, sizes: train={0}, valid={1}, test={2}.\n"
           .format(size(training_data), size(validation_data), size(test_data)))
-
 
     mini_batch_size = 10
     epochs = 20
