@@ -4,7 +4,7 @@ import theano
 from theano.tensor.nnet import softmax
 import theano.tensor as T
 
-from ..functions_ import dropout_layer
+from .dropout import DropoutLayer
 
 
 class SoftmaxLayer:
@@ -22,7 +22,7 @@ class SoftmaxLayer:
         self.inpt = inpt.reshape((mini_batch_size, self.n_in))
         self.output = softmax((1 - self.p_dropout) * T.dot(self.inpt, self.w) + self.b)
         self.y_out = T.argmax(self.output, axis=1)
-        self.inpt_dropout = dropout_layer(inpt_dropout.reshape((mini_batch_size, self.n_in)), self.p_dropout)
+        self.inpt_dropout = DropoutLayer(inpt_dropout.reshape((mini_batch_size, self.n_in)), self.p_dropout)
         self.output_dropout = softmax(T.dot(self.inpt_dropout, self.w) + self.b)
 
     def cost(self, net):

@@ -3,7 +3,8 @@ import numpy as np
 import theano
 import theano.tensor as T
 
-from ..functions_ import dropout_layer, sigmoid
+from ..functions_ import sigmoid
+from .dropout import DropoutLayer
 
 
 class FullyConnectedLayer:
@@ -25,7 +26,7 @@ class FullyConnectedLayer:
         self.inpt = inpt.reshape((mini_batch_size, self.n_in))
         self.output = self.activation_fn((1 - self.p_dropout) * T.dot(self.inpt, self.w) + self.b)
         self.y_out = T.argmax(self.output, axis=1)
-        self.inpt_dropout = dropout_layer(inpt_dropout.reshape((mini_batch_size, self.n_in)), self.p_dropout)
+        self.inpt_dropout = DropoutLayer(inpt_dropout.reshape((mini_batch_size, self.n_in)), self.p_dropout)
         self.output_dropout = self.activation_fn(T.dot(self.inpt_dropout, self.w) + self.b)
 
     def accuracy(self, y):

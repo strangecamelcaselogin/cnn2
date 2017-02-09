@@ -4,9 +4,10 @@ import gzip
 import numpy as np
 import theano
 import theano.tensor as T
-from theano.tensor import shared_randomstreams
+
 from theano.tensor.nnet import sigmoid
 from theano.tensor import tanh
+
 
 # Activation functions for neurons
 def linear(z):
@@ -15,12 +16,6 @@ def linear(z):
 
 def ReLU(z):
     return T.maximum(0.0, z)
-
-
-def dropout_layer(layer, p_dropout):
-    srng = shared_randomstreams.RandomStreams(np.random.RandomState(0).randint(999999))
-    mask = srng.binomial(n=1, p=1 - p_dropout, size=layer.shape)
-    return layer * T.cast(mask, theano.config.floatX)
 
 
 def size(data):
