@@ -1,9 +1,9 @@
 import numpy as np
+
 import theano
 import theano.tensor as T
-from theano.tensor.nnet import sigmoid
 
-from ..functions_ import dropout_layer
+from ..functions_ import dropout_layer, sigmoid
 
 
 class FullyConnectedLayer:

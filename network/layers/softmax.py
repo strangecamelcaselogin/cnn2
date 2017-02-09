@@ -1,4 +1,5 @@
 import numpy as np
+
 import theano
 from theano.tensor.nnet import softmax
 import theano.tensor as T

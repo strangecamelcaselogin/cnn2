@@ -1,8 +1,10 @@
 import numpy as np
+
 import theano
 from theano.tensor.signal.pool import pool_2d
 from theano.tensor.nnet import conv
-from theano.tensor.nnet import sigmoid
+
+from ..functions_ import sigmoid
 
 
 class ConvPoolLayer:

@@ -15,6 +15,7 @@ from time import time, localtime
 import _pickle
 
 import numpy as np
+
 import theano
 import theano.tensor as T
 from theano import pp
@@ -23,7 +24,6 @@ from .functions_ import size, safe_float2int
 from .functions_ import sigmoid, tanh
 
 
-# Main class used to construct and train networks
 class Network:
     def __init__(self, layers, mini_batch_size, name=None):
         """Takes a list of `layers`, describing the network architecture, and
