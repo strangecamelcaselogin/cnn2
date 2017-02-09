@@ -1,7 +1,4 @@
 #  https://github.com/MichalDanielDobrzanski/DeepLearningPython35/blob/master/test.py
-#  http://deeplearning.net/software/theano/install_ubuntu.html#install-ubuntu
-#  https://medium.com/@wchccy/install-theano-cuda-8-in-ubuntu-16-04-bdb02773e1ea#.xszbqnysf
-
 
 
 from theano import function, config, shared, sandbox

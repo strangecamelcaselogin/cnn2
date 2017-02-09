@@ -118,6 +118,7 @@ class Network:
                 self.y: test_y[i * self.mini_batch_size: (i + 1) * self.mini_batch_size]
             })
 
+        vld_acc_history = []
         best_validation_accuracy = 0.0
         best_iteration = 0
         test_accuracy = 0
@@ -137,6 +138,8 @@ class Network:
                     print(" : by {0:.1f} sec. | vld acc = {1:.2%}"
                           .format(time() - epoch_timer, validation_accuracy), end=' ')
 
+                    vld_acc_history.append(validation_accuracy)
+
                     if validation_accuracy >= best_validation_accuracy:
                         best_validation_accuracy = validation_accuracy
                         best_iteration = iteration
@@ -150,6 +153,8 @@ class Network:
         print("Best validation accuracy of {0:.2%} obtained at iteration {1}."
               .format(best_validation_accuracy, best_iteration + 1))
         print("Corresponding test accuracy of {0:.2%}.".format(test_accuracy))
+
+        return vld_acc_history
 
     def predict(self, data, index):
         """

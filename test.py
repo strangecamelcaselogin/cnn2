@@ -8,31 +8,28 @@ from network.layers import ConvPoolLayer
 from network.layers import FullyConnectedLayer
 from network.layers import SoftmaxLayer
 
-from network.functions_ import load_data_shared, size
 from network import ReLU, sigmoid, tanh
 
-
-def check_show(size, data):
-    """
-    img = None
-    for i in test_set:
-        im = training_data[0].get_value()[i].reshape((28, 28))
-        if img is None:
-            img = plt.imshow(im, cmap='Greys', interpolation='none')
-        else:
-            img.set_data(im)
-        plt.pause(2.)
-        print(net.test_mb_predictions(i))
-        plt.draw()
-    """
-    pass
+from network.functions_ import load_data_shared, size
 
 
-def show_img(img_data, num):
-    print(net.predict(test_data[0], num))  # TODO label or title
-    im = img_data[num].reshape((28, 28))
+def show_img(data, num):
+    images, labels = data[0].get_value(), data[1].eval()
+
+    im = images[num].reshape((28, 28))
+    lb = labels[num]
+    predict = net.predict(data[0], num)
+
     plt.imshow(im, cmap='Greys', interpolation='none')
+    plt.title('predict: {}, label: {}'.format(predict, lb))
     plt.show()
+
+
+def plot_vld_acc(history):
+    plt.plot(history)
+    plt.title("Validation accuracy / Epoch.")
+    plt.show()
+
 
 if __name__ == '__main__':
 
@@ -52,7 +49,8 @@ if __name__ == '__main__':
 
     mini_batch_size = 50
     epochs = 40
-    ETA = 0.1
+    ETA = 0.075
+    lmbda = 0.5
 
     net = Network([
         ConvPoolLayer(image_shape=(mini_batch_size, 1, 28, 28),
@@ -66,23 +64,23 @@ if __name__ == '__main__':
         FullyConnectedLayer(n_in=40 * 4 * 4,
                             n_out=100,
                             activation_fn=ReLU,
-                            p_dropout=0.25),
+                            p_dropout=0.5),
         SoftmaxLayer(n_in=100,
                      n_out=10,
-                     p_dropout=0.25)], mini_batch_size)
-    net.SGD(training_data, validation_data, test_data, epochs, ETA)
+                     p_dropout=0.5)], mini_batch_size)
 
-    #  net.show_info()
+    h = net.SGD(training_data, validation_data, test_data, epochs, ETA, lmbda=lmbda)
     net.save()
 
-    # net = Network.load('./2017-2-9_10-12-15.net')
+    #net = Network.load('./2017-2-9_21-14-35.net')
 
-    # test_num = 9
-    # show_img(test_data[0].get_value(), test_num)
+    net.show_info()
+
+    plot_vld_acc(h)
+    print(h)
 
     for i in [randint(0, 10000) for _ in range(25)]:
-        show_img(test_data[0].get_value(), i)
+        show_img(validation_data, i)
 
-    # TODO give name to net
     # TODO early stop
     # TODO ETA as function of epoch
