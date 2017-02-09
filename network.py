@@ -27,7 +27,7 @@ from theano.tensor import tanh
 
 # Main class used to construct and train networks
 class Network:
-    def __init__(self, layers, mini_batch_size):
+    def __init__(self, layers, mini_batch_size, name=None):
         """Takes a list of `layers`, describing the network architecture, and
         a value for the `mini_batch_size` to be used during training
         by stochastic gradient descent.
@@ -49,7 +49,8 @@ class Network:
         self.output = self.layers[-1].output
         self.output_dropout = self.layers[-1].output_dropout
 
-        self.hyper_params = None
+        self.hyper_params = dict()
+        self.name = name
 
     def SGD(self, training_data, validation_data, test_data, epochs, eta, lmbda=0.0):
         """
@@ -64,8 +65,10 @@ class Network:
 
         # save hyper parameters in case of Network.load().
         self.hyper_params = {'epochs': epochs,
+                             'mini_batch_size': self.mini_batch_size,
                              'eta': eta,
-                             'lmbda': lmbda}
+                             'lmbda': lmbda,
+                             'name': self.name}
 
         num_training_batches = safe_float2int(size(training_data) / self.mini_batch_size)
         num_validation_batches = safe_float2int(size(validation_data) / self.mini_batch_size)
@@ -168,6 +171,8 @@ class Network:
         with open(path, 'wb') as f:
             _pickle.dump(self.__dict__, file=f)
 
+        print('saved as {}'.format(path))
+
     @classmethod
     def load(cls, path):
         """
@@ -183,3 +188,9 @@ class Network:
         obj = cls.__new__(cls)
         obj.__dict__.update(_dict)
         return obj
+
+    def show_info(self):
+        print('\ninfo:')
+        for k in self.hyper_params.keys():
+            print('{} = {}'.format(k, self.hyper_params[k]))
+        print()

@@ -30,7 +30,7 @@ def check_show(size, data):
 
 
 def show_img(img_data, num):
-    print(net.predict(test_data[0], test_num))  # TODO label or title
+    print(net.predict(test_data[0], num))  # TODO label or title
     im = img_data[num].reshape((28, 28))
     plt.imshow(im, cmap='Greys', interpolation='none')
     plt.show()
@@ -51,8 +51,8 @@ if __name__ == '__main__':
     print("Data loaded, sizes: train={0}, valid={1}, test={2}.\n"
           .format(size(training_data), size(validation_data), size(test_data)))
 
-    mini_batch_size = 10
-    epochs = 20
+    mini_batch_size = 50
+    epochs = 40
     ETA = 0.1
 
     net = Network([
@@ -73,11 +73,17 @@ if __name__ == '__main__':
                      p_dropout=0.25)], mini_batch_size)
     net.SGD(training_data, validation_data, test_data, epochs, ETA)
 
+    #  net.show_info()
+    net.save()
 
-    # net = Network.load('./2017-2-6_23-38-47.net')
+    # net = Network.load('./2017-2-9_10-12-15.net')
 
-    test_num = 9
-    show_img(test_data[0].get_value(), test_num)
+    # test_num = 9
+    # show_img(test_data[0].get_value(), test_num)
 
+    for i in [randint(0, 10000) for _ in range(25)]:
+        show_img(test_data[0].get_value(), i)
+
+    # TODO give name to net
     # TODO early stop
     # TODO ETA as function of epoch
