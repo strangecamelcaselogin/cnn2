@@ -1,0 +1,49 @@
+my laptop: i5 5200U, NVIDIA GT 940M
+
+ubuntu-gnome 16.04 with gdm
+nvidia-367 (364 does not work)
+
+
+based on this manual http://deeplearning.net/software/theano/install_ubuntu.html#install-ubuntu
+and this https://medium.com/@wchccy/install-theano-cuda-8-in-ubuntu-16-04-bdb02773e1ea
+
+
+I. Theano basic.
+sudo apt-get install python-numpy python-scipy python-dev python-pip python-nose g++ libopenblas-dev git
+sudo pip install Theano
+
+
+II. GPU support.
+1) CUDA toolkit 8.0 from https://developer.nvidia.com/cuda-downloads
+   Linux -> x86_64 -> Ubuntu -> 16.04 -> runfile (local)
+
+   sudo service gdm stop
+   ctrl + alt + f1
+   sudo sh <cuda_installer>.run
+   [?]
+
+   reboot
+
+2) ? GCC version magic ?
+
+3) create ~/.theanorc with content or THEANO_FLAGS variable to environment.
+
+	[global]
+	device = gpu
+	floatX = float32
+
+	[cuda] 
+	root = /usr/local/cuda-8.0
+
+	[nvcc]
+	flags=-D_FORCE_INLINES
+
+4) also add to ~/.bashrc this
+   export PATH="/usr/local/cuda-8.0/bin:$PATH"
+   export CUDA_HOME="/usr/local/cuda:$CUDA_HOME"
+   export LD_LIBRARY_PATH="/usr/local/cuda-8.0/lib64:$LD_LIBRARY_PATH"
+
+   and this commands
+
+   sudo echo "/usr/local/cuda-8.0/lib64" > /etc/ld.so.conf.d/cuda.conf
+   sudo ldconfig
