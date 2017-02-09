@@ -3,7 +3,7 @@ import theano
 from theano.tensor.nnet import softmax
 import theano.tensor as T
 
-from functions_ import dropout_layer
+from ..functions_ import dropout_layer
 
 
 class SoftmaxLayer:

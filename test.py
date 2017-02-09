@@ -1,16 +1,15 @@
 from random import randint
-import theano
 import matplotlib.pyplot as plt
+import theano
 
 from network import Network
-from convolution import ConvPoolLayer
-from fullyconnected import FullyConnectedLayer
-from softmax import SoftmaxLayer
 
-from theano.tensor.nnet import sigmoid
-from theano.tensor import tanh
-from functions_ import load_data_shared, size
-from functions_ import ReLU
+from network.layers import ConvPoolLayer
+from network.layers import FullyConnectedLayer
+from network.layers import SoftmaxLayer
+
+from network.functions_ import load_data_shared, size
+from network.functions_ import ReLU, sigmoid, tanh
 
 
 def check_show(size, data):

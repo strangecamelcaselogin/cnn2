@@ -19,10 +19,8 @@ import theano
 import theano.tensor as T
 from theano import pp
 
-from functions_ import size, safe_float2int
-
-from theano.tensor.nnet import sigmoid
-from theano.tensor import tanh
+from .functions_ import size, safe_float2int
+from .functions_ import sigmoid, tanh
 
 
 # Main class used to construct and train networks

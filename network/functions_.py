@@ -5,7 +5,8 @@ import numpy as np
 import theano
 import theano.tensor as T
 from theano.tensor import shared_randomstreams
-
+from theano.tensor.nnet import sigmoid
+from theano.tensor import tanh
 
 # Activation functions for neurons
 def linear(z):
