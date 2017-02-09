@@ -4,7 +4,7 @@ import theano
 from theano.tensor.signal.pool import pool_2d
 from theano.tensor.nnet import conv
 
-from ..functions_ import sigmoid
+from ..network import sigmoid
 
 
 class ConvPoolLayer:

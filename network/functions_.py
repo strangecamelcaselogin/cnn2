@@ -5,18 +5,6 @@ import numpy as np
 import theano
 import theano.tensor as T
 
-from theano.tensor.nnet import sigmoid
-from theano.tensor import tanh
-
-
-# Activation functions for neurons
-def linear(z):
-    return z
-
-
-def ReLU(z):
-    return T.maximum(0.0, z)
-
 
 def size(data):
     """Return the size of the dataset `data`."""

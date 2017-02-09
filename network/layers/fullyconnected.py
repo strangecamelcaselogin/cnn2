@@ -3,7 +3,7 @@ import numpy as np
 import theano
 import theano.tensor as T
 
-from ..functions_ import sigmoid
+from ..network import sigmoid
 from .dropout import DropoutLayer
 
 

@@ -21,7 +21,16 @@ import theano.tensor as T
 from theano import pp
 
 from .functions_ import size, safe_float2int
-from .functions_ import sigmoid, tanh
+
+# Activation functions for neurons
+from theano.tensor.nnet import sigmoid
+from theano.tensor import tanh
+
+
+def linear(z): return z
+
+
+def ReLU(z): return T.maximum(0.0, z)
 
 
 class Network:

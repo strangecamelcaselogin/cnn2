@@ -9,7 +9,7 @@ from network.layers import FullyConnectedLayer
 from network.layers import SoftmaxLayer
 
 from network.functions_ import load_data_shared, size
-from network.functions_ import ReLU, sigmoid, tanh
+from network import ReLU, sigmoid, tanh
 
 
 def check_show(size, data):
