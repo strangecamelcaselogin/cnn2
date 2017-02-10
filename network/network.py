@@ -59,7 +59,7 @@ class Network:
         self.hyper_params = dict()
         self.name = name
 
-    def SGD(self, training_data, validation_data, test_data, epochs, eta, lmbda=0.0):
+    def SGD(self, training_data, validation_data, test_data, epochs, eta, lmbda=0.0, sharp_update=1000):
         """
         Train the network using mini-batch stochastic gradient descent.
 
@@ -83,18 +83,22 @@ class Network:
 
         print("Start SGD training.")
         print("{0} epochs, {1} training batches per epoch.".format(epochs, num_training_batches))
-        print("# - 1000 batches.\n")
+        print("# - {} batches.\n".format(sharp_update))
 
         # data
         training_x, training_y = training_data
         validation_x, validation_y = validation_data
         test_x, test_y = test_data
 
+        # ETA as function(epoch)
+        f_eta = theano.shared(eta[0])
+        dec_eta = (eta[0] - eta[1]) / epochs
+
         # define the (regularized) cost function, symbolic gradients, and updates
         l2_norm_squared = sum([(layer.w ** 2).sum() for layer in self.layers])
         cost = self.layers[-1].cost(self) + 0.5 * lmbda * l2_norm_squared / num_training_batches
         grads = T.grad(cost, self.params)
-        updates = [(param, param - eta * grad) for param, grad in zip(self.params, grads)]
+        updates = [(param, param - T.cast(f_eta, 'float32') * grad) for param, grad in zip(self.params, grads)]
 
         # define functions to train a mini-batch, and to compute the
         # accuracy in validation and test mini-batches.
@@ -124,11 +128,11 @@ class Network:
         test_accuracy = 0
         for epoch in range(epochs):
             epoch_timer = time()
-            print("Epoch {0}: ".format(epoch+1), end='', flush=True)
+            print("Epoch {0}, ETA={1}: ".format(epoch+1, np.round(f_eta.get_value(), decimals=2)), end='', flush=True)
 
             for minibatch_index in range(num_training_batches):
                 iteration = num_training_batches * epoch + minibatch_index
-                if minibatch_index % 1000 == 0:
+                if minibatch_index % sharp_update == 0:
                     print("#", end='', flush=True)
 
                 train_mb(minibatch_index)
@@ -147,6 +151,8 @@ class Network:
                         print("(best) | cor acc = {0:.2%}".format(test_accuracy))
                     else:
                         print()
+
+            f_eta.set_value(f_eta.get_value() - dec_eta)  # decrement ETA
 
         print()
         print("Finished training network by {0:.1f} sec.".format(time() - train_timer))

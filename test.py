@@ -25,7 +25,8 @@ def show_img(data, num):
     plt.show()
 
 
-def plot_vld_acc(history):
+def plot_vld_acc(history, epochs=40, low_percent=0.9):
+    plt.axis([0, epochs, low_percent, 1])
     plt.plot(history)
     plt.title("Validation accuracy / Epoch.")
     plt.show()
@@ -49,8 +50,9 @@ if __name__ == '__main__':
 
     mini_batch_size = 50
     epochs = 40
-    ETA = 0.075
-    lmbda = 0.5
+    ETA = (0.75, 0.2)
+    lmbda = 0.1
+    dropout = 0.5
 
     net = Network([
         ConvPoolLayer(image_shape=(mini_batch_size, 1, 28, 28),
@@ -64,23 +66,23 @@ if __name__ == '__main__':
         FullyConnectedLayer(n_in=40 * 4 * 4,
                             n_out=100,
                             activation_fn=ReLU,
-                            p_dropout=0.5),
+                            p_dropout=dropout),
         SoftmaxLayer(n_in=100,
                      n_out=10,
-                     p_dropout=0.5)], mini_batch_size)
+                     p_dropout=dropout)], mini_batch_size)
 
-    h = net.SGD(training_data, validation_data, test_data, epochs, ETA, lmbda=lmbda)
+    h = net.SGD(training_data, validation_data, test_data, epochs, ETA, lmbda=lmbda, sharp_update=100)
     net.save()
 
-    #net = Network.load('./2017-2-9_21-14-35.net')
+    # net = Network.load()
 
     net.show_info()
 
     plot_vld_acc(h)
     print(h)
 
-    for i in [randint(0, 10000) for _ in range(25)]:
-        show_img(validation_data, i)
+    # for i in [randint(0, 10000) for _ in range(25)]:
+    #    show_img(validation_data, i)
 
-    # TODO early stop
-    # TODO ETA as function of epoch
+    # TODO early stop algorithm
+    # TODO more reports
