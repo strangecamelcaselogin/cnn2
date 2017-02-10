@@ -74,7 +74,7 @@ if __name__ == '__main__':
     h = net.SGD(training_data, validation_data, test_data, epochs, ETA, lmbda=lmbda, sharp_update=100)
     net.save()
 
-    # net = Network.load()
+    # net = Network.load('')
 
     net.show_info()
 
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     print(h)
 
     # for i in [randint(0, 10000) for _ in range(25)]:
-    #    show_img(validation_data, i)
+    #     show_img(validation_data, i)
 
     # TODO early stop algorithm
     # TODO more reports

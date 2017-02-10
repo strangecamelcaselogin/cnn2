@@ -69,13 +69,7 @@ class Network:
         """
 
         train_timer = time()
-
-        # save hyper parameters in case of Network.load().
-        self.hyper_params = {'epochs': epochs,
-                             'mini_batch_size': self.mini_batch_size,
-                             'eta': eta,
-                             'lmbda': lmbda,
-                             'name': self.name}
+        self.save_hyper_params(epochs, eta, lmbda)
 
         num_training_batches = safe_float2int(size(training_data) / self.mini_batch_size)
         num_validation_batches = safe_float2int(size(validation_data) / self.mini_batch_size)
@@ -90,7 +84,7 @@ class Network:
         validation_x, validation_y = validation_data
         test_x, test_y = test_data
 
-        # ETA as function(epoch)
+        # ETA as function(epochs)
         f_eta = theano.shared(eta[0])
         dec_eta = (eta[0] - eta[1]) / epochs
 
@@ -135,7 +129,7 @@ class Network:
                 if minibatch_index % sharp_update == 0:
                     print("#", end='', flush=True)
 
-                train_mb(minibatch_index)
+                train_mb(minibatch_index)  # train function call
 
                 if (iteration + 1) % num_training_batches == 0:
                     validation_accuracy = np.mean([validate_mb_accuracy(j) for j in range(num_validation_batches)])
@@ -151,8 +145,8 @@ class Network:
                         print("(best) | cor acc = {0:.2%}".format(test_accuracy))
                     else:
                         print()
-
-            f_eta.set_value(f_eta.get_value() - dec_eta)  # decrement ETA
+            # decrement ETA
+            f_eta.set_value(f_eta.get_value() - dec_eta)
 
         print()
         print("Finished training network by {0:.1f} sec.".format(time() - train_timer))
@@ -206,6 +200,16 @@ class Network:
         obj = cls.__new__(cls)
         obj.__dict__.update(_dict)
         return obj
+
+    def save_hyper_params(self, epochs, eta, lmbda):
+        """
+        Save hyper parameters in self.hyper_params.
+        """
+        self.hyper_params = {'epochs': epochs,
+                             'mini_batch_size': self.mini_batch_size,
+                             'eta': eta,
+                             'lmbda': lmbda,
+                             'name': self.name}
 
     def show_info(self):
         print('\ninfo:')
