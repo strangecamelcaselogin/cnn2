@@ -49,10 +49,11 @@ if __name__ == '__main__':
           .format(size(training_data), size(validation_data), size(test_data)))
 
     mini_batch_size = 50
-    epochs = 40
-    ETA = (0.75, 0.2)
+    epochs = 60
+    ETA = (0.5, 0.03)
     lmbda = 0.1
-    dropout = 0.5
+    dropout1 = 0.5
+    dropout2 = 0.25
 
     net = Network([
         ConvPoolLayer(image_shape=(mini_batch_size, 1, 28, 28),
@@ -66,19 +67,19 @@ if __name__ == '__main__':
         FullyConnectedLayer(n_in=40 * 4 * 4,
                             n_out=100,
                             activation_fn=ReLU,
-                            p_dropout=dropout),
+                            p_dropout=dropout1),
         SoftmaxLayer(n_in=100,
                      n_out=10,
-                     p_dropout=dropout)], mini_batch_size)
+                     p_dropout=dropout2)], mini_batch_size)
 
-    h = net.SGD(training_data, validation_data, test_data, epochs, ETA, lmbda=lmbda, sharp_update=100)
+    h = net.SGD(training_data, validation_data, test_data, epochs, ETA, lmbda=lmbda)
     net.save()
 
     # net = Network.load('')
 
     net.show_info()
 
-    plot_vld_acc(h)
+    plot_vld_acc(h, epochs)
     print(h)
 
     # for i in [randint(0, 10000) for _ in range(25)]:

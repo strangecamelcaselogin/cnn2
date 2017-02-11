@@ -59,7 +59,7 @@ class Network:
         self.hyper_params = dict()
         self.name = name
 
-    def SGD(self, training_data, validation_data, test_data, epochs, eta, lmbda=0.0, sharp_update=1000):
+    def SGD(self, training_data, validation_data, test_data, epochs, eta, lmbda=0.0):
         """
         Train the network using mini-batch stochastic gradient descent.
 
@@ -75,6 +75,7 @@ class Network:
         num_validation_batches = safe_float2int(size(validation_data) / self.mini_batch_size)
         num_test_batches = safe_float2int(size(test_data) / self.mini_batch_size)
 
+        sharp_update = int(num_training_batches / 10)
         print("Start SGD training.")
         print("{0} epochs, {1} training batches per epoch.".format(epochs, num_training_batches))
         print("# - {} batches.\n".format(sharp_update))
@@ -103,12 +104,14 @@ class Network:
                 self.x: training_x[i * self.mini_batch_size: (i + 1) * self.mini_batch_size],
                 self.y: training_y[i * self.mini_batch_size: (i + 1) * self.mini_batch_size]
             })
+
         validate_mb_accuracy = theano.function(
             [i], self.layers[-1].accuracy(self.y),
             givens={
                 self.x: validation_x[i * self.mini_batch_size: (i + 1) * self.mini_batch_size],
                 self.y: validation_y[i * self.mini_batch_size: (i + 1) * self.mini_batch_size]
             })
+
         test_mb_accuracy = theano.function(
             [i], self.layers[-1].accuracy(self.y),
             givens={
@@ -122,7 +125,8 @@ class Network:
         test_accuracy = 0
         for epoch in range(epochs):
             epoch_timer = time()
-            print("Epoch {0}, ETA={1}: ".format(epoch+1, np.round(f_eta.get_value(), decimals=2)), end='', flush=True)
+            print("Epoch {0: <2} ETA={1: <4}: ".format(epoch + 1, np.round(f_eta.get_value(), decimals=2)), end='',
+                  flush=True)
 
             for minibatch_index in range(num_training_batches):
                 iteration = num_training_batches * epoch + minibatch_index
