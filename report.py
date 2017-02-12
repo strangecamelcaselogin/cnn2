@@ -9,11 +9,11 @@ def epoch60():
     plt.axis([0, 60, 0.95, 1])
     plt.title('Влияние параметра скорости обучения на точность.')
     
-    n23_, = plt.plot(n23, 'r', label='#23 (99.40%), ETA=0.6..0.1')
-    n24_, = plt.plot(n24, 'b', label='#24 (99.44%), ETA=0.5..0.03')
+    n23_, = plt.plot(n23, 'r', label='№23 (99.40%), ETA=0.6..0.1')
+    n24_, = plt.plot(n24, 'b', label='№24 (99.44%), ETA=0.5..0.03')
     plt.legend(loc=4, handles=[n23_, n24_])
-    plt.xlabel('Epochs')
-    plt.ylabel('Accuracy')
+    plt.xlabel('Эпоха')
+    plt.ylabel('Точность')
     plt.show()
 
 def epoch40():
@@ -24,15 +24,19 @@ def epoch40():
     plt.axis([0, 40, 0.9, 1])
     plt.title('Влияние завышенных параметров на точность.')
 
-    n20_, = plt.plot(n20, 'b', label='#20 (99.35%), оптимальные параметры')
-    n10_, = plt.plot(n10,'r', label='#10 (98.47%), завышенная lambda')
-    n16_, = plt.plot(n16, 'g', label='#16 (98.50%), завышенная ETA')
+    n20_, = plt.plot(n20, 'b', label='№20 (99.35%), оптимальные параметры')
+    n10_, = plt.plot(n10,'r', label='№10 (98.47%), завышенная lambda')
+    n16_, = plt.plot(n16, 'g', label='№16 (98.50%), завышенная ETA')
     plt.legend(loc=4, handles=[n20_, n10_, n16_])
-    plt.xlabel('Epochs')
-    plt.ylabel('Accuracy')
+    plt.xlabel('Эпоха')
+    plt.ylabel('Точность')
     plt.show()
 
 if __name__ == '__main__':
+    # download Verdana.ttx
+    # put it in - /usr/share/matplotlib/mpl-data/fonts/ttf
+    # delete MPL cache - rm -rf rm -rf ~/.cache/matplotlib/
+
     font = {'family': 'Verdana',
             'weight': 'normal'}
     rc('font', **font)
