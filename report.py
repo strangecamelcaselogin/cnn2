@@ -35,7 +35,7 @@ def epoch40():
 if __name__ == '__main__':
     # download Verdana.ttx
     # put it in - /usr/share/matplotlib/mpl-data/fonts/ttf
-    # delete MPL cache - rm -rf rm -rf ~/.cache/matplotlib/
+    # delete MPL cache - rm -rf ~/.cache/matplotlib/
 
     font = {'family': 'Verdana',
             'weight': 'normal'}
